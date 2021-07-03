@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <button  type="button" class="loadData">Load Data from cookie</button>
+
+    <form action="" method="post" id="FormUpwork">
+        Input 1<br>
+        <input type="text" name="inp1" id=""><br>
+        Input 2<br>
+        <input type="text" name="inp2" id=""><br>
+        Input 3<br>
+        <input type="text" name="inp3" id=""><br>
+        Input 4<br>
+        <input type="text" name="inp4" id=""><br>
+        Input 5<br>
+        <input type="text" name="inp5" id=""><br>
+        Input 6<br>
+        <input type="text" name="inp6" id=""><br>
+        Input 7<br>
+        <input type="text" name="inp7" id=""><br>
+        <button  type="button" class="savetocookie">Save to Cookie</button>
+        <input type="submit" value="Send">
+        
+    </form>
+
+
+    <script>
+
+        function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000));
+            var expires = "expires="+ d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for(let i = 0; i <ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+            }
+
+
+        $(function(){
+        
+        $('.savetocookie').click(function(){
+          var formData =JSON.stringify($("#FormUpwork").serializeArray());
+          setCookie('formrecord',formData,1);
+          alert('Saved to cookie');
+        });
+
+        $('.loadData').click(function(){
+
+          try{
+            
+                   var data=JSON.parse(getCookie('formrecord'));
+          
+                    data.forEach(function(key, index){
+                 
+                    $("input[type='text'][name="+key.name+"]").val(key.value);
+                    $("input[type='number'][name="+key.name+"]").val(key.value);
+                    $("input[type='email'][name="+key.name+"]").val(key.value);
+
+                    $("textarea[name="+key.name+"]").val(key.value);
+
+                    $("input[type='checkbox'][name="+key.name+"]").prop('checked', true);
+                    $("select[name="+key.name+"]").append($('<option>', {
+                    value: key.value,
+                    text: key.value,
+                    selected:'selected'
+                }));
+                });
+
+
+                 alert('Form data fetched');
+              }
+              catch(err) {
+              alert(' There is an error. '+err);
+            }
+        });
+
+    })
+
+    </script>
+</body>
+</html>
